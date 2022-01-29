@@ -1,2 +1,7 @@
 ---
-# handlers file for gnome_loginscreen_configure
+
+- name: restart gdm
+  ansible.builtin.service:
+    name: gdm
+    state: restarted
+

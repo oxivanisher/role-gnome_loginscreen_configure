@@ -4,6 +4,7 @@
   ansible.builtin.lineinfile:
     path: /etc/gdm3/greeter.dconf-defaults
     regexp: '^disable-user-list='
+    insertafter: '\[org/gnome/login-screen\]'
     line: "disable-user-list=true"
   notify: restart gdm
 

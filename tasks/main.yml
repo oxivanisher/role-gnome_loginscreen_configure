@@ -28,6 +28,15 @@
   ansible.builtin.lineinfile:
     path: /etc/gdm3/greeter.dconf-defaults
     regexp: '^picture-uri='
+    insertafter: '[org/gnome/desktop/background]'
     line: "picture-uri='file:///usr/share/images/kreuz_loginscreen.jpg'"
+  notify: restart gdm
+
+- name: configure login background image
+  ansible.builtin.lineinfile:
+    path: /etc/gdm3/greeter.dconf-defaults
+    regexp: '^picture-options='
+    insertafter: '[org/gnome/desktop/background]'
+    line: "picture-options='zoom'"
   notify: restart gdm
 

@@ -19,7 +19,11 @@
 - name: hide users from login
   ansible.builtin.copy:
     dest: "/var/lib/AccountsService/users/{{ item }}"
-    src: gnome_user_hide
+    content: |
+      [User]                              
+      Language=                     
+      XSession=gnome                  
+      SystemAccount=true
     owner: root
     group: root
     mode: '0644'

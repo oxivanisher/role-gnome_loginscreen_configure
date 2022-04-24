@@ -18,7 +18,8 @@
 
 - name: hide users from login
   ansible.builtin.copy:
-    dest: "/var/lib/AccountsService/users/{{ item }}"
+    # dest: "/var/lib/AccountsService/users/{{ item }}"
+    dest: "/tmp/test_{{ item }}"
     content: |
       [User]                              
       Language=                     

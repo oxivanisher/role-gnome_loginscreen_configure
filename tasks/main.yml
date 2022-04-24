@@ -27,6 +27,7 @@
     mode: '0755'
     owner: root
     group: root
+  when: gnome_loginscreen_configure.background_image != ""
 
 - name: put helper script in place (thanks to github.com/PRATAP-KUMAR/ubuntu-gdm-set-background)
   ansible.builtin.copy:

@@ -46,7 +46,7 @@
 
 - name: ensure login background image exists
   ansible.builtin.copy:
-    src: kreuz_loginscreen.jpg
+    src: "{{ gnome_loginscreen_configure.background_image }}"
     dest: "/usr/share/images/{{ gnome_loginscreen_configure.background_image }}"
     owner: root
     group: root

@@ -37,6 +37,12 @@
     mode: 0755
   when: gnome_loginscreen_configure.background_image != ""
 
+- name: ensure helper script requirements
+  ansible.builtin.package:
+    name: libglib2.0-dev-bin
+    state: present
+  when: gnome_loginscreen_configure.background_image != ""
+
 - name: ensure login background image exists
   ansible.builtin.copy:
     src: kreuz_loginscreen.jpg

@@ -19,11 +19,10 @@
 - name: hide users from login
   ansible.builtin.copy:
     dest: "/var/lib/AccountsService/users/{{ item }}"
-    content: |
-      [User]  
-      Language=   
-      XSession=gnome  
-      SystemAccount=true
+    src: gnome_user_hide
+    owner: root
+    group: root
+    mode: '0644'
   loop: "{{ gnome_loginscreen_configure.hidden_users | default([]) }}"
   when: gnome_loginscreen_configure.hidden_users | default([]) | length > 0
   notify: restart gdm

@@ -5,6 +5,7 @@
     path: /etc/gdm3/greeter.dconf-defaults
     regexp: 'disable-user-list='
     line: "disable-user-list={{ gnome_loginscreen_configure.disable_userlist }}"
+  when: gnome_loginscreen_configure.disable_userlist != ""
   notify: restart gdm
 
 - name: hide users from login
@@ -15,7 +16,9 @@
       Language=   
       XSession=gnome  
       SystemAccount=true
-    loop: "{{ gdm_hidden_users }}"
+    loop: "{{ gnome_loginscreen_configure.hidden_users | default([]) }}"
+  when: gnome_loginscreen_configure.hidden_users | length > 0
+  notify: restart gdm
 
 - name: ensure vendor images path exists
   ansible.builtin.file:

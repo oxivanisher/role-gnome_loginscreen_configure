@@ -24,7 +24,7 @@
       Language=   
       XSession=gnome  
       SystemAccount=true
-    loop: "{{ gnome_loginscreen_configure.hidden_users | default([]) }}"
+  loop: "{{ gnome_loginscreen_configure.hidden_users | default([]) }}"
   when: gnome_loginscreen_configure.hidden_users | length > 0
   notify: restart gdm
 

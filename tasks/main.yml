@@ -28,6 +28,15 @@
     owner: root
     group: root
 
+- name: put helper script in place (thanks to github.com/PRATAP-KUMAR/ubuntu-gdm-set-background)
+  ansible.builtin.copy:
+    src: ubuntu-gdm-set-background
+    dest: /usr/local/bin/ubuntu-gdm-set-background
+    owner: root
+    group: root
+    mode: 0755
+  when: gnome_loginscreen_configure.background_image != ""
+
 - name: ensure login background image exists
   ansible.builtin.copy:
     src: kreuz_loginscreen.jpg
@@ -39,10 +48,11 @@
   notify: restart gdm
 
 - name: configure login background image
-  ansible.builtin.lineinfile:
-    path: /etc/gdm3/greeter.dconf-defaults
-    regexp: 'picture-uri='
-    line: "picture-uri='file:///usr/share/images/{{ gnome_loginscreen_configure.background_image }}'"
+  ansible.builtin.command:
+    argv:
+      - /usr/local/bin/ubuntu-gdm-set-background
+      - --image
+      - "/usr/share/images/{{ gnome_loginscreen_configure.background_image }}"
   when: gnome_loginscreen_configure.background_image != ""
   notify: restart gdm
 

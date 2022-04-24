@@ -1,6 +1,6 @@
 ---
 
-- name: enable user list
+- name: configure user list
   ansible.builtin.lineinfile:
     path: /etc/gdm3/greeter.dconf-defaults
     regexp: 'disable-user-list='
@@ -72,7 +72,7 @@
   when: gnome_loginscreen_configure.background_image != ""
   notify: restart gdm
 
-- name: enable login banner message
+- name: configure login banner message
   ansible.builtin.lineinfile:
     path: /etc/gdm3/greeter.dconf-defaults
     regexp: 'banner-message-enable='
@@ -80,7 +80,7 @@
   when: gnome_loginscreen_configure.banner_message != ""
   notify: restart gdm
 
-- name: configure login banner message
+- name: set login banner message
   ansible.builtin.lineinfile:
     path: /etc/gdm3/greeter.dconf-defaults
     regexp: 'banner-message-text='

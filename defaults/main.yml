@@ -1,2 +1,2 @@
 ---
-# defaults file for gnome_loginscreen_configure
+gdm_hidden_users: []

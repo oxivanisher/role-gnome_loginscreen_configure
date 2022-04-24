@@ -1,2 +1,7 @@
 ---
-gdm_hidden_users: []
+gnome_loginscreen_configure:
+  background_image:
+  hidden_users: []
+  disable_userlist: false
+  banner_message:
+

@@ -25,7 +25,7 @@
       XSession=gnome  
       SystemAccount=true
   loop: "{{ gnome_loginscreen_configure.hidden_users | default([]) }}"
-  when: gnome_loginscreen_configure.hidden_users | length > 0
+  when: gnome_loginscreen_configure.hidden_users | default([]) | length > 0
   notify: restart gdm
 
 - name: ensure vendor images path exists

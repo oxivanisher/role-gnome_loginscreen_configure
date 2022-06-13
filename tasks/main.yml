@@ -21,9 +21,9 @@
     # dest: "/var/lib/AccountsService/users/{{ item }}"
     dest: "/tmp/test_{{ item }}"
     content: |
-      [User]                              
-      Language=                     
-      XSession=gnome                  
+      [User]
+      Language=
+      XSession=gnome
       SystemAccount=true
     owner: root
     group: root
@@ -109,4 +109,3 @@
     line: "banner-message-text='{{ gnome_loginscreen_configure.banner_message }}'"
   when: gnome_loginscreen_configure.banner_message != ""
   notify: restart gdm
-

@@ -4,4 +4,3 @@
   ansible.builtin.service:
     name: gdm
     state: restarted
-

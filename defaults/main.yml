@@ -4,4 +4,3 @@ gnome_loginscreen_configure:
   hidden_users: []
   disable_userlist: false
   banner_message:
-

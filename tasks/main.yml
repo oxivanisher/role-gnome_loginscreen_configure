@@ -90,7 +90,7 @@
     path: /etc/gdm3/greeter.dconf-defaults
     regexp: "banner-message-enable="
     line: "banner-message-enable=false"
-  when: gnome_loginscreen_configure.banner_message == ""
+  when: gnome_loginscreen_configure.banner_message | length == 0
   notify: Restart gdm
 
 - name: Enable login banner message

@@ -4,7 +4,7 @@
     path: /etc/gdm3/greeter.dconf-defaults
     regexp: "disable-user-list="
     line: "disable-user-list=true"
-  when: gnome_loginscreen_configure.disable_userlist|bool
+  when: gnome_loginscreen_configure_disable_userlist|bool
   notify: Restart gdm
   become: true
   become_user: root
@@ -14,7 +14,7 @@
     path: /etc/gdm3/greeter.dconf-defaults
     regexp: "disable-user-list="
     line: "disable-user-list=false"
-  when: not gnome_loginscreen_configure.disable_userlist|bool
+  when: not gnome_loginscreen_configure_disable_userlist|bool
   notify: Restart gdm
   become: true
   become_user: root
@@ -31,8 +31,8 @@
     owner: root
     group: root
     mode: "0644"
-  loop: "{{ gnome_loginscreen_configure.hidden_users | default([]) }}"
-  when: gnome_loginscreen_configure.hidden_users | default([]) | length > 0
+  loop: "{{ gnome_loginscreen_configure_hidden_users | default([]) }}"
+  when: gnome_loginscreen_configure_hidden_users | default([]) | length > 0
   notify: Restart gdm
   become: true
   become_user: root
@@ -44,7 +44,7 @@
     mode: "0755"
     owner: root
     group: root
-  when: gnome_loginscreen_configure.background_image | length > 0
+  when: gnome_loginscreen_configure_background_image | length > 0
   become: true
   become_user: root
 
@@ -55,7 +55,7 @@
     owner: root
     group: root
     mode: "0755"
-  when: gnome_loginscreen_configure.background_image | length > 0
+  when: gnome_loginscreen_configure_background_image | length > 0
   become: true
   become_user: root
 
@@ -63,18 +63,18 @@
   ansible.builtin.package:
     name: libglib2.0-dev-bin
     state: present
-  when: gnome_loginscreen_configure.background_image | length > 0
+  when: gnome_loginscreen_configure_background_image | length > 0
   become: true
   become_user: root
 
 - name: Ensure login background image exists
   ansible.builtin.copy:
-    src: "{{ gnome_loginscreen_configure.background_image }}"
-    dest: "/usr/share/images/{{ gnome_loginscreen_configure.background_image }}"
+    src: "{{ gnome_loginscreen_configure_background_image }}"
+    dest: "/usr/share/images/{{ gnome_loginscreen_configure_background_image }}"
     owner: root
     group: root
     mode: "0644"
-  when: gnome_loginscreen_configure.background_image | length > 0
+  when: gnome_loginscreen_configure_background_image | length > 0
   notify: Restart gdm
   become: true
   become_user: root
@@ -84,11 +84,11 @@
     argv:
       - /usr/local/bin/ubuntu-gdm-set-background
       - --image
-      - "/usr/share/images/{{ gnome_loginscreen_configure.background_image }}"
+      - "/usr/share/images/{{ gnome_loginscreen_configure_background_image }}"
   register: result
   failed_when: ( result.rc not in [ 0, 1 ] )
   changed_when: false
-  when: gnome_loginscreen_configure.background_image | length > 0
+  when: gnome_loginscreen_configure_background_image | length > 0
   notify: Restart gdm
   become: true
   become_user: root
@@ -98,7 +98,7 @@
     path: /etc/gdm3/greeter.dconf-defaults
     regexp: "picture-options="
     line: "picture-options='zoom'"
-  when: gnome_loginscreen_configure.background_image | length > 0
+  when: gnome_loginscreen_configure_background_image | length > 0
   notify: Restart gdm
   become: true
   become_user: root
@@ -108,7 +108,7 @@
     path: /etc/gdm3/greeter.dconf-defaults
     regexp: "banner-message-enable="
     line: "banner-message-enable=false"
-  when: gnome_loginscreen_configure.banner_message | length == 0
+  when: gnome_loginscreen_configure_banner_message | length == 0
   notify: Restart gdm
   become: true
   become_user: root
@@ -118,7 +118,7 @@
     path: /etc/gdm3/greeter.dconf-defaults
     regexp: "banner-message-enable="
     line: "banner-message-enable=true"
-  when: gnome_loginscreen_configure.banner_message | length > 0
+  when: gnome_loginscreen_configure_banner_message | length > 0
   notify: Restart gdm
   become: true
   become_user: root
@@ -127,8 +127,8 @@
   ansible.builtin.lineinfile:
     path: /etc/gdm3/greeter.dconf-defaults
     regexp: "banner-message-text="
-    line: "banner-message-text='{{ gnome_loginscreen_configure.banner_message }}'"
-  when: gnome_loginscreen_configure.banner_message | length > 0
+    line: "banner-message-text='{{ gnome_loginscreen_configure_banner_message }}'"
+  when: gnome_loginscreen_configure_banner_message | length > 0
   notify: Restart gdm
   become: true
   become_user: root

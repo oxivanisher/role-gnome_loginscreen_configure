@@ -8,18 +8,18 @@ Role Variables
 
 | Name                                         | Comment                              | Default value |
 |----------------------------------------------|--------------------------------------|---------------|
-| gnome_loginscreen_configure_background_image | The user on the system for which the mounts are configured  |           |
-| gnome_loginscreen_configure_hidden_users     | The CIFS username on the nas |          |
-| gnome_loginscreen_configure_disable_userlist | The CIFS password on the nas |          |
-| gnome_loginscreen_configure_banner_message   | A list of dicts containing `src` and `dest`. | `[]`     |
+| gnome_loginscreen_configure_background_image | A file set as gnome login background. It needs to be in the `{{ playbook_dir }}/files/gnome_loginscreen_configure/` directory  |           |
+| gnome_loginscreen_configure_hidden_users     | Users which are hidden from the login screen | `[]`        |
+| gnome_loginscreen_configure_disable_userlist | Should the user list be disabled at the login screen |  `false`       |
+| gnome_loginscreen_configure_banner_message   | A custom banner message for the login screen | ``     |
 
 Example Playbook
 ----------------
 ```yaml
-- name: Configure WOL
+- name: Configure Gnome login screen
   hosts: clients
   roles:
-    - role: oxivanisher.linux_desktop.wol
+    - role: oxivanisher.linux_desktop.gnome_loginscreen_configure
 ```
 
 License

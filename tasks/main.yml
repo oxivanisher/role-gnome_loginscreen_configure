@@ -69,7 +69,7 @@
 
 - name: Ensure login background image exists
   ansible.builtin.copy:
-    src: "{{ gnome_loginscreen_configure_background_image }}"
+    src: "{{ playbook_dir }}/files/gnome_loginscreen_configure/{{ gnome_loginscreen_configure_background_image }}"
     dest: "/usr/share/images/{{ gnome_loginscreen_configure_background_image }}"
     owner: root
     group: root

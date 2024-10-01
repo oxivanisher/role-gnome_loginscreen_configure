@@ -32,7 +32,7 @@
     owner: root
     group: root
     mode: "0644"
-  when: gnome_loginscreen_configure.disable_userlist|bool
+  when: gnome_loginscreen_configure_disable_userlist|bool
   become: true
   become_user: root
 
@@ -46,7 +46,7 @@
     owner: root
     group: root
     mode: "0644"
-  when: not gnome_loginscreen_configure.disable_userlist|bool
+  when: not gnome_loginscreen_configure_disable_userlist|bool
   become: true
   become_user: root
 

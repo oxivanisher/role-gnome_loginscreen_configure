@@ -1,5 +1,56 @@
 ---
-- name: Enable user list
+- name: Create dconf profile
+  ansible.builtin.copy:
+    dest: /etc/dconf/profile/gdm
+    content: |
+      user-db:user
+      system-db:gdm
+      file-db:/usr/share/gdm/greeter-dconf-defaults
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+  become_user: root
+
+- name: Ensure custom gdm.d folder exists
+  ansible.builtin.file:
+    path: /etc/dconf/db/gdm.d
+    state: directory
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+  become_user: root
+
+- name: Enable user list in dconf profile
+  ansible.builtin.copy:
+    dest: /etc/dconf/db/gdm.d/00-login-screen
+    content: |
+      [org/gnome/login-screen]
+      # Disable user list from login screen
+      disable-user-list=false
+    owner: root
+    group: root
+    mode: "0644"
+  when: gnome_loginscreen_configure.disable_userlist|bool
+  become: true
+  become_user: root
+
+- name: False user list in dconf profile
+  ansible.builtin.copy:
+    dest: /etc/dconf/db/gdm.d/00-login-screen
+    content: |
+      [org/gnome/login-screen]
+      # Disable user list from login screen
+      disable-user-list=true
+    owner: root
+    group: root
+    mode: "0644"
+  when: not gnome_loginscreen_configure.disable_userlist|bool
+  become: true
+  become_user: root
+
+- name: Enable user list in dconf
   ansible.builtin.lineinfile:
     path: /etc/gdm3/greeter.dconf-defaults
     regexp: "disable-user-list="
@@ -9,7 +60,7 @@
   become: true
   become_user: root
 
-- name: Disable user list
+- name: Disable user list in dconf
   ansible.builtin.lineinfile:
     path: /etc/gdm3/greeter.dconf-defaults
     regexp: "disable-user-list="

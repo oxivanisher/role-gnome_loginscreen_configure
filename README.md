@@ -1,5 +1,6 @@
 gnome_loginscreen_configure
 ===========================
+[![Ansible Lint](https://github.com/oxivanisher/role-gnome_loginscreen_configure/actions/workflows/ansible-lint.yml/badge.svg)](https://github.com/oxivanisher/role-gnome_loginscreen_configure/actions/workflows/ansible-lint.yml)
 
 This role configures the Gnome login screen.
 

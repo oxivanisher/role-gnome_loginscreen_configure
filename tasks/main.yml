@@ -1,182 +1,190 @@
 ---
-- name: Create dconf profile
-  ansible.builtin.copy:
-    dest: /etc/dconf/profile/gdm
-    content: |
-      user-db:user
-      system-db:gdm
-      file-db:/usr/share/gdm/greeter-dconf-defaults
-    owner: root
-    group: root
-    mode: "0644"
-  become: true
-  become_user: root
 
-- name: Ensure custom gdm.d folder exists
-  ansible.builtin.file:
-    path: /etc/dconf/db/gdm.d
-    state: directory
-    owner: root
-    group: root
-    mode: "0644"
-  become: true
-  become_user: root
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
 
-- name: Enable user list in dconf profile
-  ansible.builtin.copy:
-    dest: /etc/dconf/db/gdm.d/00-login-screen
-    content: |
-      [org/gnome/login-screen]
-      # Disable user list from login screen
-      disable-user-list=false
-    owner: root
-    group: root
-    mode: "0644"
-  when: gnome_loginscreen_configure_disable_userlist|bool
-  become: true
-  become_user: root
+- name: Configure gdm3
+  when: "'gdm3' in ansible_facts.packages"
+  block:
+    - name: Create dconf profile
+      ansible.builtin.copy:
+        dest: /etc/dconf/profile/gdm
+        content: |
+          user-db:user
+          system-db:gdm
+          file-db:/usr/share/gdm/greeter-dconf-defaults
+        owner: root
+        group: root
+        mode: "0644"
+      become: true
+      become_user: root
 
-- name: False user list in dconf profile
-  ansible.builtin.copy:
-    dest: /etc/dconf/db/gdm.d/00-login-screen
-    content: |
-      [org/gnome/login-screen]
-      # Disable user list from login screen
-      disable-user-list=true
-    owner: root
-    group: root
-    mode: "0644"
-  when: not gnome_loginscreen_configure_disable_userlist|bool
-  become: true
-  become_user: root
+    - name: Ensure custom gdm.d folder exists
+      ansible.builtin.file:
+        path: /etc/dconf/db/gdm.d
+        state: directory
+        owner: root
+        group: root
+        mode: "0644"
+      become: true
+      become_user: root
 
-- name: Enable user list in dconf
-  ansible.builtin.lineinfile:
-    path: /etc/gdm3/greeter.dconf-defaults
-    regexp: "disable-user-list="
-    line: "disable-user-list=true"
-  when: gnome_loginscreen_configure_disable_userlist|bool
-  notify: Restart gdm
-  become: true
-  become_user: root
+    - name: Enable user list in dconf profile
+      ansible.builtin.copy:
+        dest: /etc/dconf/db/gdm.d/00-login-screen
+        content: |
+          [org/gnome/login-screen]
+          # Disable user list from login screen
+          disable-user-list=false
+        owner: root
+        group: root
+        mode: "0644"
+      when: gnome_loginscreen_configure_disable_userlist|bool
+      become: true
+      become_user: root
 
-- name: Disable user list in dconf
-  ansible.builtin.lineinfile:
-    path: /etc/gdm3/greeter.dconf-defaults
-    regexp: "disable-user-list="
-    line: "disable-user-list=false"
-  when: not gnome_loginscreen_configure_disable_userlist|bool
-  notify: Restart gdm
-  become: true
-  become_user: root
+    - name: False user list in dconf profile
+      ansible.builtin.copy:
+        dest: /etc/dconf/db/gdm.d/00-login-screen
+        content: |
+          [org/gnome/login-screen]
+          # Disable user list from login screen
+          disable-user-list=true
+        owner: root
+        group: root
+        mode: "0644"
+      when: not gnome_loginscreen_configure_disable_userlist|bool
+      become: true
+      become_user: root
 
-- name: Hide users from login
-  ansible.builtin.copy:
-    dest: "/var/lib/AccountsService/users/{{ item }}"
-    content: |
-      [User]
-      SystemAccount=true
-    owner: root
-    group: root
-    mode: "0600"
-  loop: "{{ gnome_loginscreen_configure_hidden_users | default([]) }}"
-  when: gnome_loginscreen_configure_hidden_users | default([]) | length > 0
-  notify: Restart gdm
-  become: true
-  become_user: root
+    - name: Enable user list in dconf
+      ansible.builtin.lineinfile:
+        path: /etc/gdm3/greeter.dconf-defaults
+        regexp: "disable-user-list="
+        line: "disable-user-list=true"
+      when: gnome_loginscreen_configure_disable_userlist|bool
+      notify: Restart gdm
+      become: true
+      become_user: root
 
-- name: Ensure vendor images path exists
-  ansible.builtin.file:
-    path: /usr/share/images/
-    state: directory
-    mode: "0755"
-    owner: root
-    group: root
-  when: gnome_loginscreen_configure_background_image | length > 0
-  become: true
-  become_user: root
+    - name: Disable user list in dconf
+      ansible.builtin.lineinfile:
+        path: /etc/gdm3/greeter.dconf-defaults
+        regexp: "disable-user-list="
+        line: "disable-user-list=false"
+      when: not gnome_loginscreen_configure_disable_userlist|bool
+      notify: Restart gdm
+      become: true
+      become_user: root
 
-- name: Put helper script in place (thanks to github.com/PRATAP-KUMAR/ubuntu-gdm-set-background)
-  ansible.builtin.copy:
-    src: ubuntu-gdm-set-background
-    dest: /usr/local/bin/ubuntu-gdm-set-background
-    owner: root
-    group: root
-    mode: "0755"
-  when: gnome_loginscreen_configure_background_image | length > 0
-  become: true
-  become_user: root
+    - name: Hide users from login
+      ansible.builtin.copy:
+        dest: "/var/lib/AccountsService/users/{{ item }}"
+        content: |
+          [User]
+          SystemAccount=true
+        owner: root
+        group: root
+        mode: "0600"
+      loop: "{{ gnome_loginscreen_configure_hidden_users | default([]) }}"
+      when: gnome_loginscreen_configure_hidden_users | default([]) | length > 0
+      notify: Restart gdm
+      become: true
+      become_user: root
 
-- name: Ensure helper script requirements
-  ansible.builtin.package:
-    name: libglib2.0-dev-bin
-    state: present
-  when: gnome_loginscreen_configure_background_image | length > 0
-  become: true
-  become_user: root
+    - name: Ensure vendor images path exists
+      ansible.builtin.file:
+        path: /usr/share/images/
+        state: directory
+        mode: "0755"
+        owner: root
+        group: root
+      when: gnome_loginscreen_configure_background_image | length > 0
+      become: true
+      become_user: root
 
-- name: Ensure login background image exists
-  ansible.builtin.copy:
-    src: "{{ playbook_dir }}/files/gnome_loginscreen_configure/{{ gnome_loginscreen_configure_background_image }}"
-    dest: "/usr/share/images/{{ gnome_loginscreen_configure_background_image }}"
-    owner: root
-    group: root
-    mode: "0644"
-  when: gnome_loginscreen_configure_background_image | length > 0
-  notify: Restart gdm
-  become: true
-  become_user: root
+    - name: Put helper script in place (thanks to github.com/PRATAP-KUMAR/ubuntu-gdm-set-background)
+      ansible.builtin.copy:
+        src: ubuntu-gdm-set-background
+        dest: /usr/local/bin/ubuntu-gdm-set-background
+        owner: root
+        group: root
+        mode: "0755"
+      when: gnome_loginscreen_configure_background_image | length > 0
+      become: true
+      become_user: root
 
-- name: Configure login background image
-  ansible.builtin.command:
-    argv:
-      - /usr/local/bin/ubuntu-gdm-set-background
-      - --image
-      - "/usr/share/images/{{ gnome_loginscreen_configure_background_image }}"
-  register: result
-  failed_when: ( result.rc not in [ 0, 1 ] )
-  changed_when: false
-  when: gnome_loginscreen_configure_background_image | length > 0
-  notify: Restart gdm
-  become: true
-  become_user: root
+    - name: Ensure helper script requirements
+      ansible.builtin.package:
+        name: libglib2.0-dev-bin
+        state: present
+      when: gnome_loginscreen_configure_background_image | length > 0
+      become: true
+      become_user: root
 
-- name: Configure login background image
-  ansible.builtin.lineinfile:
-    path: /etc/gdm3/greeter.dconf-defaults
-    regexp: "picture-options="
-    line: "picture-options='zoom'"
-  when: gnome_loginscreen_configure_background_image | length > 0
-  notify: Restart gdm
-  become: true
-  become_user: root
+    - name: Ensure login background image exists
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/files/gnome_loginscreen_configure/{{ gnome_loginscreen_configure_background_image }}"
+        dest: "/usr/share/images/{{ gnome_loginscreen_configure_background_image }}"
+        owner: root
+        group: root
+        mode: "0644"
+      when: gnome_loginscreen_configure_background_image | length > 0
+      notify: Restart gdm
+      become: true
+      become_user: root
 
-- name: Disable login banner message
-  ansible.builtin.lineinfile:
-    path: /etc/gdm3/greeter.dconf-defaults
-    regexp: "banner-message-enable="
-    line: "banner-message-enable=false"
-  when: gnome_loginscreen_configure_banner_message | length == 0
-  notify: Restart gdm
-  become: true
-  become_user: root
+    - name: Configure login background image
+      ansible.builtin.command:
+        argv:
+          - /usr/local/bin/ubuntu-gdm-set-background
+          - --image
+          - "/usr/share/images/{{ gnome_loginscreen_configure_background_image }}"
+      register: result
+      failed_when: ( result.rc not in [ 0, 1 ] )
+      changed_when: false
+      when: gnome_loginscreen_configure_background_image | length > 0
+      notify: Restart gdm
+      become: true
+      become_user: root
 
-- name: Enable login banner message
-  ansible.builtin.lineinfile:
-    path: /etc/gdm3/greeter.dconf-defaults
-    regexp: "banner-message-enable="
-    line: "banner-message-enable=true"
-  when: gnome_loginscreen_configure_banner_message | length > 0
-  notify: Restart gdm
-  become: true
-  become_user: root
+    - name: Configure login background image
+      ansible.builtin.lineinfile:
+        path: /etc/gdm3/greeter.dconf-defaults
+        regexp: "picture-options="
+        line: "picture-options='zoom'"
+      when: gnome_loginscreen_configure_background_image | length > 0
+      notify: Restart gdm
+      become: true
+      become_user: root
 
-- name: Set login banner message
-  ansible.builtin.lineinfile:
-    path: /etc/gdm3/greeter.dconf-defaults
-    regexp: "banner-message-text="
-    line: "banner-message-text='{{ gnome_loginscreen_configure_banner_message }}'"
-  when: gnome_loginscreen_configure_banner_message | length > 0
-  notify: Restart gdm
-  become: true
-  become_user: root
+    - name: Disable login banner message
+      ansible.builtin.lineinfile:
+        path: /etc/gdm3/greeter.dconf-defaults
+        regexp: "banner-message-enable="
+        line: "banner-message-enable=false"
+      when: gnome_loginscreen_configure_banner_message | length == 0
+      notify: Restart gdm
+      become: true
+      become_user: root
+
+    - name: Enable login banner message
+      ansible.builtin.lineinfile:
+        path: /etc/gdm3/greeter.dconf-defaults
+        regexp: "banner-message-enable="
+        line: "banner-message-enable=true"
+      when: gnome_loginscreen_configure_banner_message | length > 0
+      notify: Restart gdm
+      become: true
+      become_user: root
+
+    - name: Set login banner message
+      ansible.builtin.lineinfile:
+        path: /etc/gdm3/greeter.dconf-defaults
+        regexp: "banner-message-text="
+        line: "banner-message-text='{{ gnome_loginscreen_configure_banner_message }}'"
+      when: gnome_loginscreen_configure_banner_message | length > 0
+      notify: Restart gdm
+      become: true
+      become_user: root

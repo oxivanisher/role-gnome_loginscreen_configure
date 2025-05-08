@@ -2,7 +2,7 @@ gnome_loginscreen_configure
 ===========================
 [![Ansible Lint](https://github.com/oxivanisher/role-gnome_loginscreen_configure/actions/workflows/ansible-lint.yml/badge.svg)](https://github.com/oxivanisher/role-gnome_loginscreen_configure/actions/workflows/ansible-lint.yml)
 
-This role configures the Gnome login screen.
+This role configures the Gnome login screen. If the gdm3 package is not installed (i.e. on Linux Mint), it will currently skip everything.
 
 Role Variables
 --------------

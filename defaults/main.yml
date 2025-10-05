@@ -1,5 +1,6 @@
 ---
 gnome_loginscreen_configure_background_image:
+gnome_loginscreen_configure_background_image_path: "{{ playbook_dir }}/files/gnome_loginscreen_configure/"
 gnome_loginscreen_configure_hidden_users: []
 gnome_loginscreen_configure_disable_userlist: false
 gnome_loginscreen_configure_banner_message:

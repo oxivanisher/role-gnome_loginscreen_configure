@@ -78,7 +78,7 @@
       become_user: root
 
     - name: Hide users on login screen
-      ansible.builtin.ini_file:
+      community.general.ini_file:
         dest: "/var/lib/AccountsService/users/{{ item }}"
         section: User
         option: SystemAccount
@@ -94,7 +94,7 @@
       become_user: root
 
     - name: Show users on login screen
-      ansible.builtin.ini_file:
+      community.general.ini_file:
         dest: "/var/lib/AccountsService/users/{{ item }}"
         section: User
         option: SystemAccount

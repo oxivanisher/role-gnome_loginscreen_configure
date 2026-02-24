@@ -12,8 +12,11 @@ Role Variables
 | gnome_loginscreen_configure_background_image      | A file set as gnome login background.                |                                                         |
 | gnome_loginscreen_configure_background_image_path | Location of the gnome login background file.         | `{{ playbook_dir }}/files/gnome_loginscreen_configure/` |
 | gnome_loginscreen_configure_hidden_users          | Users which are hidden from the login screen         | `[]`                                                    |
+| gnome_loginscreen_configure_shown_users           | Users which are always shown on the login screen     | `[]`                                                    |
 | gnome_loginscreen_configure_disable_userlist      | Should the user list be disabled at the login screen | `false`                                                 |
 | gnome_loginscreen_configure_banner_message        | A custom banner message for the login screen         | ``                                                      |
+
+**Attention:** `gnome_loginscreen_configure_shown_users` has presedence over `gnome_loginscreen_configure_hidden_users`.
 
 Example Playbook
 ----------------

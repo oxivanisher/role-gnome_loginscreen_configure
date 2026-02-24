@@ -1,5 +1,4 @@
 ---
-
 - name: Gather the package facts
   ansible.builtin.package_facts:
     manager: auto
@@ -78,17 +77,34 @@
       become: true
       become_user: root
 
-    - name: Hide users from login
-      ansible.builtin.copy:
+    - name: Hide users on login screen
+      ansible.builtin.ini_file:
         dest: "/var/lib/AccountsService/users/{{ item }}"
-        content: |
-          [User]
-          SystemAccount=true
+        section: User
+        option: SystemAccount
+        value: "true"
+        no_extra_spaces: true
         owner: root
         group: root
         mode: "0600"
       loop: "{{ gnome_loginscreen_configure_hidden_users | default([]) }}"
       when: gnome_loginscreen_configure_hidden_users | default([]) | length > 0
+      notify: Restart gdm
+      become: true
+      become_user: root
+
+    - name: Show users on login screen
+      ansible.builtin.ini_file:
+        dest: "/var/lib/AccountsService/users/{{ item }}"
+        section: User
+        option: SystemAccount
+        value: "false"
+        no_extra_spaces: true
+        owner: root
+        group: root
+        mode: "0600"
+      loop: "{{ gnome_loginscreen_configure_shown_users | default([]) }}"
+      when: gnome_loginscreen_configure_shown_users | default([]) | length > 0
       notify: Restart gdm
       become: true
       become_user: root

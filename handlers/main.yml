@@ -1,8 +1,6 @@
 ---
-
 - name: Restart gdm
   ansible.builtin.service:
     name: gdm
     state: restarted
   become: true
-  become_user: root

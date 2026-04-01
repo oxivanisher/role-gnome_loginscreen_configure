@@ -17,7 +17,6 @@
         group: root
         mode: "0644"
       become: true
-      become_user: root
 
     - name: Ensure custom gdm.d folder exists
       ansible.builtin.file:
@@ -27,7 +26,6 @@
         group: root
         mode: "0644"
       become: true
-      become_user: root
 
     - name: Enable user list in dconf profile
       ansible.builtin.copy:
@@ -41,7 +39,6 @@
         mode: "0644"
       when: gnome_loginscreen_configure_disable_userlist|bool
       become: true
-      become_user: root
 
     - name: False user list in dconf profile
       ansible.builtin.copy:
@@ -55,7 +52,6 @@
         mode: "0644"
       when: not gnome_loginscreen_configure_disable_userlist|bool
       become: true
-      become_user: root
 
     - name: Enable user list in dconf
       ansible.builtin.lineinfile:
@@ -65,7 +61,6 @@
       when: gnome_loginscreen_configure_disable_userlist|bool
       notify: Restart gdm
       become: true
-      become_user: root
 
     - name: Disable user list in dconf
       ansible.builtin.lineinfile:
@@ -75,7 +70,6 @@
       when: not gnome_loginscreen_configure_disable_userlist|bool
       notify: Restart gdm
       become: true
-      become_user: root
 
     - name: Hide users on login screen
       community.general.ini_file:
@@ -91,7 +85,6 @@
       when: gnome_loginscreen_configure_hidden_users | default([]) | length > 0
       notify: Restart gdm
       become: true
-      become_user: root
 
     - name: Show users on login screen
       community.general.ini_file:
@@ -107,7 +100,6 @@
       when: gnome_loginscreen_configure_shown_users | default([]) | length > 0
       notify: Restart gdm
       become: true
-      become_user: root
 
     - name: Ensure vendor images path exists
       ansible.builtin.file:
@@ -118,7 +110,6 @@
         group: root
       when: gnome_loginscreen_configure_background_image | length > 0
       become: true
-      become_user: root
 
     - name: Put helper script in place (thanks to github.com/PRATAP-KUMAR/ubuntu-gdm-set-background)
       ansible.builtin.copy:
@@ -129,7 +120,6 @@
         mode: "0755"
       when: gnome_loginscreen_configure_background_image | length > 0
       become: true
-      become_user: root
 
     - name: Ensure helper script requirements
       ansible.builtin.package:
@@ -137,7 +127,6 @@
         state: present
       when: gnome_loginscreen_configure_background_image | length > 0
       become: true
-      become_user: root
 
     - name: Ensure login background image exists
       ansible.builtin.copy:
@@ -149,7 +138,6 @@
       when: gnome_loginscreen_configure_background_image | length > 0
       notify: Restart gdm
       become: true
-      become_user: root
 
     - name: Configure login background image
       ansible.builtin.command:
@@ -163,7 +151,6 @@
       when: gnome_loginscreen_configure_background_image | length > 0
       notify: Restart gdm
       become: true
-      become_user: root
 
     - name: Configure login background image
       ansible.builtin.lineinfile:
@@ -173,7 +160,6 @@
       when: gnome_loginscreen_configure_background_image | length > 0
       notify: Restart gdm
       become: true
-      become_user: root
 
     - name: Disable login banner message
       ansible.builtin.lineinfile:
@@ -183,7 +169,6 @@
       when: gnome_loginscreen_configure_banner_message | length == 0
       notify: Restart gdm
       become: true
-      become_user: root
 
     - name: Enable login banner message
       ansible.builtin.lineinfile:
@@ -193,7 +178,6 @@
       when: gnome_loginscreen_configure_banner_message | length > 0
       notify: Restart gdm
       become: true
-      become_user: root
 
     - name: Set login banner message
       ansible.builtin.lineinfile:
@@ -203,4 +187,3 @@
       when: gnome_loginscreen_configure_banner_message | length > 0
       notify: Restart gdm
       become: true
-      become_user: root

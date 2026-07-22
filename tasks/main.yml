@@ -145,8 +145,8 @@
           - /usr/local/bin/ubuntu-gdm-set-background
           - --image
           - "/usr/share/images/{{ gnome_loginscreen_configure_background_image }}"
-      register: result
-      failed_when: ( result.rc not in [ 0, 1 ] )
+      register: gnome_loginscreen_configure_result
+      failed_when: ( gnome_loginscreen_configure_result.rc not in [ 0, 1 ] )
       changed_when: false
       when: gnome_loginscreen_configure_background_image | length > 0
       notify: Restart gdm
